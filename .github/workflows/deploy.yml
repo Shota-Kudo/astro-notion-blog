@@ -1,14 +1,36 @@
-name: Deploy
+name: Deploy to Cloudflare Pages
 
 on:
-  #schedule:
-  #  - cron: '5 23 * * 0' # 08:05(Mon) JST
-  workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'  # 6時間ごとに実行
+  push:
+    branches: [ main ]  # mainブランチにプッシュされた時
+  workflow_dispatch:    # 手動実行用
 
 jobs:
-  curl:
-    name: Kick deploy hook
+  deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: curl
-        run: curl -X POST '${{ secrets.DEPLOY_HOOK_URL }}'
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build
+        env:
+          NOTION_API_SECRET: ${{ secrets.NOTION_API_SECRET }}
+          DATABASE_ID: ${{ secrets.DATABASE_ID }}
+        run: npm run build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist
