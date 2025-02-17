@@ -28,10 +28,10 @@ jobs:
           DATABASE_ID: ${{ secrets.DATABASE_ID }}
         run: npm run build
 
-      - name: Install Wrangler
-        run: npm install -g wrangler
-
       - name: Deploy to Cloudflare Pages
         env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: wrangler pages deploy dist
+        run: |
+          npm install -g wrangler
+          wrangler pages deploy dist --project-name=your-project-name --account-id=$CLOUDFLARE_ACCOUNT_ID
