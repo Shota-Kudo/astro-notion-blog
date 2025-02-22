@@ -4,6 +4,7 @@ import { getDatabase } from '../lib/notion/client.ts'
 import { getNavLink, getStaticFilePath, filePath } from '../lib/blog-helpers.ts'
 import '../styles/syntax-coloring.css'
 import GoogleAnalytics from '../components/GoogleAnalytics.astro'
+import Darkmode from '../components/Darkmode.astro'
 import SearchModal from '../components/SearchModal.astro'
 import SearchButton from '../components/SearchButton.astro'
 
@@ -74,6 +75,7 @@ if (database.Icon && database.Icon.Type === 'file') {
       integrity="sha384-vKruj+a13U8yHIkAyGgK1J3ArTLzrFGBbBc0tDp4ad/EyewESeXE/Iv67Aj8gKZ0"
       crossorigin="anonymous"
     />
+    <link rel="icon" href={getStaticFilePath('/favicon.png')} />
   </head>
   <body>
     <GoogleAnalytics trackingId={PUBLIC_GA_TRACKING_ID} />
@@ -139,6 +141,7 @@ if (database.Icon && database.Icon.Type === 'file') {
         </main>
 
         <aside>
+          <Darkmode />
           <SearchButton />
           <slot name="aside" />
         </aside>
@@ -184,7 +187,7 @@ if (database.Icon && database.Icon.Type === 'file') {
     order: 1;
     width: 300px;
     padding: 20px 20px;
-    background-color: #f4f4f4;
+    background-color: var(-bg);
   }
   @media (max-width: 640px) {
     aside {
@@ -217,7 +220,7 @@ if (database.Icon && database.Icon.Type === 'file') {
   }
   main header h1 {
     font-weight: 700;
-    color: #333;
+    color: var(--fg);
   }
   main header h1 a {
     display: block;
